@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+#include <string.h>
+#include <algorithm>
+using namespace std;
+
+int n;
+int map[101][101];
+// 상, 오, 하, 왼
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+vector<pair<int, char>> dv;
+vector<pair<int, int>> snake;
+
+int main()
+{
+	int k, ky, kx, l, lx, sec = 0, direction = 1, ny, nx;
+	char c;
+	bool apple;
+	cin >> n >> k;
+
+	for (int i = 0; i < k; i++) {
+		cin >> ky >> kx;
+		map[ky][kx] = 4;
+	}
+
+	cin >> l;
+
+	for (int i = 0; i < l; i++) {
+		cin >> lx >> c;
+		dv.push_back(make_pair(lx, c));
+	}
+
+	snake.push_back(make_pair(1, 1));
+	map[1][1] = 1;
+
+	while (true) {
+		sec++;
+		apple = false;
+		ny = snake[0].first + dy[direction];
+		nx = snake[0].second + dx[direction];;
+
+		if (ny<1 || nx<1 || ny>n || nx>n) break;
+		if (map[ny][nx] == 1) break;
+		if (map[ny][nx] == 4) apple = true;
+
+		snake.insert(snake.begin(), make_pair(ny, nx));
+		map[ny][nx] = 1;
+
+		if (!apple) {
+			map[snake.back().first][snake.back().second] = 0;
+			snake.pop_back();
+		}
+
+		// dv 벡터 보고 방향 변환.
+		if (dv.size() != 0) {
+			if (dv[0].first == sec) {
+				if (dv[0].second == 'D') {
+					direction += 1;
+					if (direction == 4) direction = 0;
+				}
+				else if (dv[0].second == 'L') {
+					direction -= 1;
+					if (direction == -1) direction = 3;
+				}
+				dv.erase(dv.begin());
+			}
+		}
+	}
+
+	cout << sec;
+}

@@ -1,0 +1,68 @@
+#include <iostream>
+
+using namespace std;
+
+int a[11];
+int oper[4];
+int minNum = 1000000001, maxNum = -1000000001;
+
+int oprtn(int fir, int oper, int sec) {
+	switch (oper)
+	{
+	case 0:
+		return fir + sec;
+	case 1:
+		return fir - sec;
+	case 2:
+		return fir * sec;
+	case 3:
+		if (fir < 0) {
+			int tmp = fir * -1;
+			tmp = tmp / sec;
+			return tmp * -1;
+		}
+		else {
+			return fir / sec;
+		}
+	default:
+		break;
+	}
+}
+
+void recur(int fir, int secIndex, int toPick) {
+	if (toPick == 0) {
+		if (fir > maxNum)
+			maxNum = fir;
+		if (fir < minNum)
+			minNum = fir;
+		return;
+	}
+
+	for (int i = 0; i < 4; i++) {
+		if (oper[i] == 0) continue;
+
+		oper[i]--;
+		int ans = oprtn(fir, i, a[secIndex]);
+		recur(ans, secIndex + 1, toPick - 1);
+		oper[i]++;
+	}
+}
+
+int main()
+{
+	int n;
+
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+
+	for (int i = 0; i < 4; i++) {
+		cin >> oper[i];
+	}
+
+	recur(a[0], 1, n - 1);
+
+	cout << maxNum << "\n" << minNum;
+}

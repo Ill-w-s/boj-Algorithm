@@ -1,0 +1,77 @@
+#include <iostream>
+
+using namespace std;
+
+int n, m, y, x, drec, cnt=0;
+int map[50][50];
+int dy[] = { -1,0,1,0 };
+int dx[] = { 0,1,0,-1 };
+
+void clean() {
+	while (true) {
+		//1.현재 위치 청소
+		map[y][x] = 2;
+		//모든방향 봄.
+		int ny, nx;
+		bool clearPossible = false;
+		for (int i = 0; i < 4; i++) {
+			ny = y + dy[i];
+			nx = x + dx[i];
+			if (map[ny][nx] == 0)
+				clearPossible = true;
+		}
+		// 청소불가
+		if (clearPossible == false) {
+			int rd = (drec + 2) % 4;
+			ny = y + dy[rd];
+			nx = x + dx[rd];
+			//벽
+			if (map[ny][nx] == 1) {
+				break;
+			}
+			else {
+				y = ny;
+				x = nx;
+				continue;
+			}
+		}
+
+		else {
+			//왼쪽 봄.
+			if (drec == 0)
+				drec = 3;
+			else
+				drec--;
+			
+			ny = y + dy[drec];
+			nx = x + dx[drec];
+
+			if (map[ny][nx] == 0) {
+				y = ny;
+				x = nx;
+			}
+			continue;
+		}
+	}
+}
+
+int main()
+{
+	cin >> n >> m >> y >> x >> drec;
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			cin >> map[i][j];
+
+	clean();
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (map[i][j] == 2)
+				cnt++;
+		}
+	}
+
+	cout << cnt;
+
+}

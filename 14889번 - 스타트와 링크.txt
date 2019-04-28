@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int n, halfN, minans = 99999, cnt=0;
+int s[50][50];
+bool selectN[50];
+
+vector <int> trueTeam;
+vector <int> falseTeam;
+
+void recur(int minimumNum, int toPick) {
+	if (toPick == 0) {
+
+		trueTeam.clear();
+		falseTeam.clear();
+
+		// Ã³¸®
+		for (int i = 0; i < n; i++) {
+			if (selectN[i] == true)
+				trueTeam.push_back(i);
+			else
+				falseTeam.push_back(i);
+		}
+		
+		int ttsum=0, ftsum=0;
+
+		for (int i = 0; i < trueTeam.size(); i++) {
+			for (int j = 0; j < trueTeam.size(); j++) {
+				if (i == j) continue;
+
+				ttsum += s[trueTeam[i]][trueTeam[j]];
+
+			}
+		}
+
+		for (int i = 0; i < falseTeam.size(); i++) {
+			for (int j = 0; j < falseTeam.size(); j++) {
+				if (i == j) continue;
+
+				ftsum += s[falseTeam[i]][falseTeam[j]];
+			}
+		}
+
+		int chai = ttsum > ftsum ? ttsum - ftsum : ftsum - ttsum;
+
+		if (minans > chai)
+			minans = chai;
+
+		return;
+	}
+
+	for (int i = minimumNum; i < n; i++) {
+		selectN[i] = true;
+		recur(i + 1, toPick - 1);
+		selectN[i] = false;
+	}
+
+}
+
+int main()
+{
+	cin >> n;
+	halfN = n / 2;
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			cin >> s[i][j];
+	
+	recur(0, halfN);
+
+	cout << minans;
+
+}

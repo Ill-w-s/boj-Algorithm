@@ -1,0 +1,81 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+	
+	static boolean map[][] = new boolean[101][101];
+	static int generation[];
+	static ArrayList<Point> curve[];
+	static int dy[] = { 0, -1, 0, 1 };
+	static int dx[] = { 1, 0, -1, 0 };
+	
+	public static void rotate(int index) {
+		int curveSize = curve[index].size();
+		Point lastP = curve[index].get(curveSize-1);
+		
+		for(int i=curveSize-2; i>=0; i--) {
+			Point tmp = curve[index].get(i);
+			int yDif = lastP.y - tmp.y;
+			int xDif = lastP.x - tmp.x;
+			
+			int nextY = lastP.y - xDif;
+			int nextX = lastP.x + yDif;
+			
+			curve[index].add(new Point(nextY, nextX));
+			map[nextY][nextX] = true;
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+		int n, x, y, d, g, cnt=0;
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		generation = new int[n];
+		curve = new ArrayList[n];
+		
+		// 입력, 0세대 커브 만듦
+		for(int i=0; i<n; i++) {
+			x = sc.nextInt();
+			y = sc.nextInt();
+			d = sc.nextInt();
+			g = sc.nextInt();
+			
+			curve[i] = new ArrayList<Point>();
+			
+			curve[i].add(new Point(y, x));
+			map[y][x] = true;
+			int ny = y + dy[d];
+			int nx = x + dx[d];
+			curve[i].add(new Point(ny, nx));
+			map[ny][nx] = true;
+			
+			generation[i] = g;
+		}
+		
+		for(int i=0; i<n; i++) {
+			if(generation[i]>0) {
+				for(int j=0; j<generation[i]; j++) {
+					rotate(i);
+				}
+			}
+		}
+		
+		for(int i=0; i<100; i++) {
+			for(int j=0; j<100; j++) {
+				if(map[i][j] && map[i+1][j] && map[i][j+1] && map[i+1][j+1])
+					cnt++;
+			}
+		}
+		System.out.println(cnt);
+	}
+}
+
+class Point {
+	int y;
+	int x;
+	Point(int y, int x) {
+		this.y = y;
+		this.x = x;
+	}
+}
